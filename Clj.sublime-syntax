@@ -1,0 +1,172 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/3/syntax.html
+
+name: Clj
+file_extensions:
+  - clj
+  - cljc
+  - cljs
+  - edn
+scope: source.clojure
+
+variables:
+  non_symbol_chars: '\s,;\(\)\[\]{}"`~@\^\\'
+  non_symbol_start_chars: '{{non_symbol_chars}}\d#'':'
+  symbol: '(?:[^{{non_symbol_start_chars}}][^{{non_symbol_chars}}]*)'
+  constant: '(?:nil|true|false)(?=[{{non_symbol_chars}}])'
+
+contexts:
+  main:
+    - include: match_expr
+  match_expr:
+    - include: match_noise
+    - match: '[)\]}]'
+      scope: invalid.illegal.clojure
+    - match: '\('
+      push: pop_list_head
+    - match: '\['
+      push: [{match: '\]', pop: true}, {include: match_expr}]
+    - match: '#?{'
+      push: [{match: '}', pop: true}, {include: match_expr}]
+    - match: '''|`|~@|~|#{{symbol}}?'
+      scope: constant.other.symbol.reader_macro.clojure
+      push: pop_expr
+    - match: '@'
+      scope: keyword.deref.clojure
+      push: pop_expr
+    - match: '"'
+      scope: punctuation.definition.string.clojure
+      push: pop_string_tail
+    - match: '\\[^{{non_symbol_chars}}]+'
+      scope: constant.character.clojure
+    - match: '{{constant}}'
+      scope: constant.clojure
+    - match: '::?{{symbol}}'
+      scope: constant.keyword.clojure
+    - match: '[-+]?0\d+N?(?=[{{non_symbol_chars}}])'
+      scope: invalid.illegal.clojure
+    - match: '[-+]?(?:\d+N?|0[Xx][0-9A-Fa-f]+N?|[1-9]\d*[Rr][0-9A-z]+|\d+/\d+|\d+M?|\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M?)(?=[{{non_symbol_chars}}])'
+      scope: constant.numeric.clojure
+    - match: '[^{{non_symbol_chars}}]+'
+  pop_expr:
+    - include: match_noise
+    - match: '[)\]}]'
+      scope: invalid.illegal.clojure
+      pop: true
+    - match: '\('
+      set: pop_list_head
+    - match: '\['
+      set: [{match: '\]', pop: true}, {include: match_expr}]
+    - match: '#?{'
+      set: [{match: '}', pop: true}, {include: match_expr}]
+    - match: '''|`|~@|~|#{{symbol}}?'
+      scope: constant.other.symbol.reader_macro.clojure
+      set: pop_expr
+    - match: '@'
+      scope: keyword.deref.clojure
+      set: pop_expr
+    - match: '"'
+      scope: punctuation.definition.string.clojure
+      set: pop_string_tail
+    - match: '\\[^{{non_symbol_chars}}]+'
+      scope: constant.character.clojure
+      pop: true
+    - match: '{{constant}}'
+      scope: constant.clojure
+      pop: true
+    - match: '::?{{symbol}}'
+      scope: constant.keyword.clojure
+      pop: true
+    - match: '[-+]?0\d+N?(?=[{{non_symbol_chars}}])'
+      scope: invalid.illegal.clojure
+      pop: true
+    - match: '[-+]?(?:\d+N?|0[Xx][0-9A-Fa-f]+N?|[1-9]\d*[Rr][0-9A-z]+|\d+/\d+|\d+M?|\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M?)(?=[{{non_symbol_chars}}])'
+      scope: constant.numeric.clojure
+      pop: true
+    - match: '[^{{non_symbol_chars}}]+'
+      pop: true
+  match_noise:
+    - match: ';.*'
+      scope: comment.clojure
+    - match: ','
+      scope: comment.clojure
+    - match: '\^'
+      scope: constant.other.symbol.reader_macro.metadata.clojure
+      push: pop_expr
+  pop_string_tail:
+    - meta_scope: string.clojure
+    - match: '\\.'
+      scope: constant.character.escape.clojure
+    - match: '"'
+      scope: punctuation.definition.string.clojure
+      pop: true
+  pop_list_head:
+    - include: match_noise
+    - match: '(?:defprotocol)[^{{non_symbol_chars}}]*'
+      scope: storage.type.def.clojure
+      set: pop_declare_protocol_list_tail
+    - match: '(?:definterface|deftype|defrecord)[^{{non_symbol_chars}}]*'
+      scope: storage.type.def.clojure
+      set: pop_declare_type_list_tail
+    - match: 'defmethod[^{{non_symbol_chars}}]*'
+      scope: storage.type.def.clojure
+      set: pop_list_tail
+    - match: 'def[^{{non_symbol_chars}}]*'
+      scope: storage.type.def.clojure
+      set: pop_declare_def_list_tail
+    - match: 'fn\*?(?=[{{non_symbol_chars}}])'
+      scope: storage.type.fn.clojure
+      set: pop_color_name_list_tail
+    - match: '(?=\S)'
+      set: pop_color_name_list_tail
+  pop_list_tail:
+    - match: '\)'
+      pop: true
+    - include: match_expr
+  pop_declare_protocol_list_tail:
+    - include: match_noise
+    - match: '{{constant}}'
+      scope: constant.clojure
+      set: pop_protocol_list_tail
+    - match: '{{symbol}}'
+      scope: entity.name.type.clojure
+      set: pop_protocol_list_tail
+    - match: '(?=\S)'
+      set: pop_protocol_list_tail
+  pop_declare_type_list_tail:
+    - include: match_noise
+    - match: '{{constant}}'
+      scope: constant.clojure
+      set: pop_list_tail
+    - match: '{{symbol}}'
+      scope: entity.name.type.clojure
+      set: pop_list_tail
+    - match: '(?=\S)'
+      set: pop_list_tail
+  pop_declare_def_list_tail:
+    - include: match_noise
+    - match: '{{constant}}'
+      scope: constant.clojure
+      set: pop_list_tail
+    - match: '{{symbol}}'
+      scope: entity.name.function.clojure
+      set: pop_list_tail
+    - match: '(?=\S)'
+      set: pop_list_tail
+  pop_protocol_list_tail:
+    - match: '\)'
+      pop: true
+    - match: '\('
+      push: pop_declare_def_list_tail
+    - include: match_expr
+  pop_color_name_list_tail:
+    - include: match_noise
+    - match: '{{constant}}'
+      scope: constant.clojure
+      set: pop_list_tail
+    - match: '{{symbol}}'
+      scope: keyword.invoke.clojure
+      set: pop_list_tail
+    - match: '(?=\S)'
+      set: pop_list_tail
