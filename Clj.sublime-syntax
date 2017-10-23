@@ -15,6 +15,21 @@ variables:
   non_symbol_start_chars: '{{non_symbol_chars}}\d#'':'
   symbol: '(?:[^{{non_symbol_start_chars}}][^{{non_symbol_chars}}]*)'
   constant: '(?:nil|true|false)(?=[{{non_symbol_chars}}])'
+  evil_octal: '[-+]?0\d+N?(?=[{{non_symbol_chars}}])'
+  # similar to regexes in Clojure reader, rolled into one
+  # doesn't accept octals and decimals ending with dot
+  number: |
+    (?x)    # ignore whitespace and comments in regex
+    [-+]?
+    (?:
+      \d+N?|                           # int
+      0[Xx][0-9A-Fa-f]+N?|             # hex int
+      [1-9]\d*[Rr][0-9A-z]+|           # n-radix int
+      \d+/\d+|                         # ratio
+      \d+M?|                           # decimal
+      \d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M? # full decimal
+    )
+    (?=[{{non_symbol_chars}}])
 
 contexts:
   main:
@@ -26,9 +41,15 @@ contexts:
     - match: '\('
       push: pop_list_head
     - match: '\['
-      push: [{match: '\]', pop: true}, {include: match_expr}]
+      push:
+        - match: '\]'
+          pop: true
+        - include: match_expr
     - match: '#?{'
-      push: [{match: '}', pop: true}, {include: match_expr}]
+      push:
+        - match: '}'
+          pop: true
+        - include: match_expr
     - match: '''|`|~@|~|#{{symbol}}?'
       scope: constant.other.symbol.reader_macro.clojure
       push: pop_expr
@@ -44,9 +65,9 @@ contexts:
       scope: constant.clojure
     - match: '::?{{symbol}}'
       scope: constant.keyword.clojure
-    - match: '[-+]?0\d+N?(?=[{{non_symbol_chars}}])'
+    - match: '{{evil_octal}}'
       scope: invalid.illegal.clojure
-    - match: '[-+]?(?:\d+N?|0[Xx][0-9A-Fa-f]+N?|[1-9]\d*[Rr][0-9A-z]+|\d+/\d+|\d+M?|\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M?)(?=[{{non_symbol_chars}}])'
+    - match: '{{number}}'
       scope: constant.numeric.clojure
     - match: '[^{{non_symbol_chars}}]+'
   pop_expr:
@@ -57,9 +78,15 @@ contexts:
     - match: '\('
       set: pop_list_head
     - match: '\['
-      set: [{match: '\]', pop: true}, {include: match_expr}]
+      set:
+        - match: '\]'
+          pop: true
+        - include: match_expr
     - match: '#?{'
-      set: [{match: '}', pop: true}, {include: match_expr}]
+      set:
+        - match: '}'
+          pop: true
+        - include: match_expr
     - match: '''|`|~@|~|#{{symbol}}?'
       scope: constant.other.symbol.reader_macro.clojure
       set: pop_expr
@@ -78,10 +105,10 @@ contexts:
     - match: '::?{{symbol}}'
       scope: constant.keyword.clojure
       pop: true
-    - match: '[-+]?0\d+N?(?=[{{non_symbol_chars}}])'
+    - match: '{{evil_octal}}'
       scope: invalid.illegal.clojure
       pop: true
-    - match: '[-+]?(?:\d+N?|0[Xx][0-9A-Fa-f]+N?|[1-9]\d*[Rr][0-9A-z]+|\d+/\d+|\d+M?|\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M?)(?=[{{non_symbol_chars}}])'
+    - match: '{{number}}'
       scope: constant.numeric.clojure
       pop: true
     - match: '[^{{non_symbol_chars}}]+'
@@ -90,7 +117,7 @@ contexts:
     - match: ';.*'
       scope: comment.clojure
     - match: ','
-      scope: comment.clojure
+      scope: comment.punctuation.clojure
     - match: '\^'
       scope: constant.other.symbol.reader_macro.metadata.clojure
       push: pop_expr
