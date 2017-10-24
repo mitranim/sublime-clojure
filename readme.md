@@ -11,19 +11,21 @@ Improvements:
   * No unnecessary special cases. Simple and consistent rules. User-defined
     syntax should look and feel the same as standard syntax.
 
-  * Correctly highlights literals in root scope
+  * Works in root scope
 
-  * Correctly handles numbers, keywords, and other literals
+  * Much better at handling literals such as numbers, keywords, etc
+
+  * Works for custom defs, e.g. `defroute`
 
   * Correctly handles `definterface`, `defprotocol`, `deftype`, `defrecord`
 
   * Correctly declares functions defined by `defprotocol`
 
-  * Correctly handles defs, particularly in presence of metadata
+  * Correctly declares names in the presence of metadata, whitespace, comments
 
   * Correctly handles `defmulti` and `defmethod`
 
-  * Allows user-defined defs
+  * Doesn't declare `declare` (noise)
 
   * Highlights mismatched brackets, helping with balancing
 
