@@ -24,10 +24,9 @@ variables:
     (?:
       \d+N?|                           # int
       0[Xx][0-9A-Fa-f]+N?|             # hex int
-      [1-9]\d*[Rr][0-9A-z]+|           # n-radix int
+      [2-9]\d*[Rr][0-9A-z]+|           # n-radix int
       \d+/\d+|                         # ratio
-      \d+M?|                           # decimal
-      \d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M? # full decimal
+      \d+(?:\.\d+)?(?:[Ee][-+]?\d+)?M? # decimal with scientific notation
     )
     (?=[{{non_symbol_chars}}])
 
