@@ -17,7 +17,9 @@ Improvements:
 
   * Works for custom defs, e.g. `defroute`
 
-  * Correctly handles `definterface`, `defprotocol`, `deftype`, `defrecord`
+  * Correctly declares `definterface`, `defprotocol`, `deftype`, `defrecord` types
+
+  * Correctly highlights methods in `definterface`, `defprotocol`, `deftype`, `defrecord`
 
   * Correctly declares functions defined by `defprotocol`
 
@@ -29,7 +31,7 @@ Improvements:
 
   * Highlights mismatched brackets, helping with balancing
 
-  * ≈ 6 times smaller
+  * ≈ 4 times smaller
 
   * ≈ 6 times faster
 
