@@ -1,4 +1,4 @@
-; SYNTAX TEST "Packages/Clj/Clj.sublime-syntax"
+; SYNTAX TEST "Packages/Clojure/Clojure.sublime-syntax"
 
 
 
@@ -502,10 +502,11 @@
 
   (defmulti declare-multi-fn)
 
-  (defmulti declare-multi-fn dont-declare-dispatch-fn)
+  (defmulti ^:private declare-multi-fn dont-declare-dispatch-fn)
 
   (
    defmulti
+   ^:private
    declare-multi-fn
    dont-declare-dispatch-fn
   )
