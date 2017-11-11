@@ -38,7 +38,7 @@ Improvements:
 ## Installation
 
 Clone or download the repo into Sublime's Packages folder. On MacOS, this is
-usually `/Users/<user>/Library/Application Support/Sublime Text 3/Packages`.
+usually `"/Users/<user>/Library/Application Support/Sublime Text 3/Packages"`.
 Find it in menu → Preferences → Browse Packages.
 
 Activate by selecting the `Clj` syntax. If you prefer it, set Sublime to use
