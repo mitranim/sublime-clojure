@@ -1,7 +1,8 @@
 ## Overview
 
-Syntax highlighting for [Clojure](https://clojure.org) and EDN, significantly
-improved over the built-in Clojure package.
+Syntax highlighting for [Clojure](https://clojure.org) and EDN in [Sublime
+Text](https://www.sublimetext.com). Significantly improved over the built-in
+Clojure package.
 
 Improvements:
 
