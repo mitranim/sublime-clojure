@@ -4,6 +4,8 @@ Syntax highlighting for [Clojure](https://clojure.org) and EDN in [Sublime
 Text](https://www.sublimetext.com). Significantly improved over the built-in
 Clojure package.
 
+Pending Sublime PR: https://github.com/sublimehq/Packages/pull/1259
+
 Improvements:
 
   * The syntax structure is modeled after the AST and the Clojure reader. Should
