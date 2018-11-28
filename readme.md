@@ -1,12 +1,11 @@
 ## Overview
 
 Syntax highlighting for [Clojure](https://clojure.org) and EDN in [Sublime
-Text](https://www.sublimetext.com). Significantly improved over the built-in
-Clojure package.
+Text](https://www.sublimetext.com).
 
-Pending Sublime PR: https://github.com/sublimehq/Packages/pull/1259
+Recently merged into Sublime's default packages, replacing the older Clojure syntax: https://github.com/sublimehq/Packages/pull/1259.
 
-Improvements:
+Significantly improved over the previous built-in:
 
   * The syntax structure is modeled after the AST and the Clojure reader. Should
     handle any formatting, regardless of whitespace and indentation quirks.
@@ -47,13 +46,10 @@ Find it in menu → Preferences → Browse Packages.
 Activate by selecting the `Clj` syntax. If you prefer it, set Sublime to use
 this syntax for all Clojure files.
 
-## Contributing
+## Misc
 
-Feedback, criticism, suggestions, and pull requests are welcome!
+License: https://en.wikipedia.org/wiki/WTFPL
 
-Guidelines:
+Since it's been merged into ST HQ Packages, this repo is now frozen. Contributions should be directed to https://github.com/sublimehq/Packages.
 
-  * avoid unnecessary special cases
-  * minimize code size
-
-Open an issue or reach me on skype:mitranim.web or me@mitranim.com.
+You can reach me via https://mitranim.com/#contacts.
